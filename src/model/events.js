@@ -1,9 +1,7 @@
 import data from "@/assets/sport-events.json";
 
-let cacheList = data.events;
-
 export default {
-  list({ sports, tags, minOdds } = {}) {
+  list({ sports, tags, minOdds, page = 1, pageSize = 10 } = {}) {
     // return full list of events
     let array = data.events;
     if (sports && Array.isArray(sports) && sports.length) {
@@ -21,17 +19,22 @@ export default {
         )
       );
     }
-    cacheList = array;
-    return array;
+    const skip = (page - 1) * pageSize;
+    return {
+      events: array.slice(skip, skip + pageSize),
+      pagination: {
+        length: Math.ceil(array.length / pageSize)
+      }
+    };
   },
   sports() {
     // return unique list of all sports
-    return Array.from(new Set(cacheList.map(event => event.event.sport)));
+    return Array.from(new Set(data.events.map(event => event.event.sport)));
   },
   tags() {
     // return unique list of all tags
     const tags = [];
-    const tags2D = cacheList.map(event => event.event.tags);
+    const tags2D = data.events.map(event => event.event.tags);
     for (const row of tags2D) for (const e of row) tags.push(e);
     return Array.from(new Set(tags));
   }

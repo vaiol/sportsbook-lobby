@@ -8,23 +8,18 @@
     </v-toolbar>
 
     <v-content>
-      <HelloWorld />
+      <SportsBookPage />
     </v-content>
   </v-app>
 </template>
 
 <script>
-import HelloWorld from "./components/HelloWorld";
+import SportsBookPage from "./components/SportsBookPage";
 
 export default {
   name: "App",
   components: {
-    HelloWorld
-  },
-  data() {
-    return {
-      //
-    };
+    SportsBookPage
   }
 };
 </script>

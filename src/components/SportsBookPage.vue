@@ -3,7 +3,7 @@
     <v-layout v-bind="binding" justify-end>
       <v-flex>
         <v-select
-          v-model="filter.sports"
+          v-model="query.sports"
           :items="sportItems"
           item-text="text"
           item-value="value"
@@ -15,7 +15,7 @@
       </v-flex>
       <v-flex>
         <v-select
-          v-model="filter.tags"
+          v-model="query.tags"
           :items="tagItems"
           item-text="text"
           item-value="value"
@@ -29,42 +29,51 @@
     <v-layout row wrap>
       <v-flex xs12>
         <v-subheader class="pl-0">Minimum odds</v-subheader>
-        <v-slider
-          v-model="filter.minOdds"
-          max="30"
-          thumb-label
-        ></v-slider>
+        <v-slider v-model="query.minOdds" max="30" thumb-label></v-slider>
       </v-flex>
     </v-layout>
     <div v-for="event in events" :key="event.event.name">
-      <Bet v-bind="event"></Bet>
+      <Event v-bind="event"></Event>
+    </div>
+    <div class="text-xs-center">
+      <v-pagination
+        v-model="page"
+        :length="pagination.length"
+        circle
+      ></v-pagination>
     </div>
   </v-container>
 </template>
 
 <script>
-import Bet from "@/components/Bet";
+import Event from "@/components/Event";
 import EventsModel from "@/model/events";
 
 export default {
   components: {
-    Bet
+    Event
   },
   data() {
     return {
       events: [],
       sports: [],
       tags: [],
-      filter: {
+      query: {
         tags: [],
         sports: [],
         minOdds: 0
+      },
+      page: 1,
+      pagination: {
+        length: 1
       }
     };
   },
   methods: {
-    async getEvents(query) {
-      this.events = EventsModel.list(query);
+    async getEvents() {
+      const res = EventsModel.list({ ...this.query, page: this.page });
+      this.events = res.events;
+      this.pagination = res.pagination;
     },
     async getSports() {
       this.sports = EventsModel.sports();
@@ -91,11 +100,17 @@ export default {
     }
   },
   watch: {
-    filter: {
-      handler(value) {
-        this.getEvents(value);
+    query: {
+      handler() {
+        this.page = 1;
+        this.getEvents();
       },
       deep: true
+    },
+    page: {
+      handler() {
+        this.getEvents();
+      }
     }
   },
   async mounted() {

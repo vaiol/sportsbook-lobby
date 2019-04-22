@@ -1,10 +1,16 @@
 <template>
-  <v-layout class="white black--text elevation-3 pa-3 my-2 root" v-if="event && betOffers" v-bind="binding">
+  <v-layout
+    class="white black--text elevation-3 pa-3 my-2 root"
+    v-if="event && betOffers"
+    v-bind="binding"
+  >
     <v-flex xs6 md7>
       <v-layout row justify-start>
         <v-flex xs2>
           <v-layout align-center justify-center column>
-            <span class="font-weight-thin mb-2">{{ event.start | dateFormat }}</span>
+            <span class="font-weight-thin mb-2">{{
+              event.start | dateFormat
+            }}</span>
             <span>{{ event.start | timeFormat }}</span>
           </v-layout>
         </v-flex>
@@ -34,7 +40,11 @@
           <span> - </span>
           <span class="mr-2">{{ event.awayName }}</span>
         </v-layout>
-        <v-layout justify-space-between v-for="item in betOffers" :key="item.id">
+        <v-layout
+          justify-space-between
+          v-for="item in betOffers"
+          :key="item.id"
+        >
           <v-btn
             round
             small
